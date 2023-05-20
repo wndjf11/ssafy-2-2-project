@@ -65,14 +65,16 @@ function getCookie(name: any) {
       if (VISITED_BEFORE_DATE === VISITED_NOW_DATE.toString()) {
         const expiry = new Date();
         setCookie("VisitCookie", expiry.toString(), 0);
-        setModalVisible(true);        
+        // setModalVisible(true);
+        setModalVisible(false);
       }
       // 날짜가 다를경우 비노출
       if (VISITED_BEFORE_DATE !== VISITED_NOW_DATE.toString()) {
         setModalVisible(false);
       }
     } else {      
-      setModalVisible(true);   
+      // setModalVisible(true);   
+      setModalVisible(false);
     }
   }, []);
   
