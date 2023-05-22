@@ -16,8 +16,11 @@ function Modal({ onClose, maskClosable, closable, visible }: ModalProps) {
 
   const slides = [
     {
-      url: "/Assets/PopUp/event.jpg",
+      url: "/Assets/PopUp/welcome.png",
     },
+    // {
+    //   url: "/Assets/PopUp/event.jpg",
+    // },
     // {
     //   url: "/Assets/PopUp/pasttest.png",
     // },
