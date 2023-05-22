@@ -1,3 +1,4 @@
+import { PieController } from "chart.js";
 import React, { useEffect, useRef, useState } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +8,9 @@ import {
   useGetStudyPastTestQuery,
   usePostStudyPastResultMutation,
 } from "../../../Store/api";
+import ErrorPage from "../../Common/ErrorPage";
 import Footer from "../../Common/Footer";
+import Loading from "../../Common/Loading";
 import Navbar from "../../Common/Navbar";
 
 const PastTest = (): JSX.Element => {
@@ -62,20 +65,18 @@ const PastTest = (): JSX.Element => {
     };
   }, []);
   if (isLoading1 || isLoading4 || isLoading2) {
-    return <>로딩중</>;
+    return(
+      <>
+        <Loading />
+      </>
+    )
   } else if (error1 || error2 || error4) {
-    return <>error</>;
-  } else {
-    // console.log("test.data.startTime : ", test.data.startTime);
-    // console.log("test.data.endTime : ", test.data.endTime);
-    // console.log("시작시간 만족?", test.data.startTime <= today_temp);
-    // console.log("끝시간 만족?", test.data.endTime >= today_temp);
-    // console.log("오늘은?", today_temp);
-
-    // console.log(
-    //   test.data.startTime <= today_temp && test.data.endTime >= today_temp,
-    // );
-
+    return(
+      <>
+        <ErrorPage />
+      </>
+    )
+  } else {    
     return (
       <>
         <Navbar />
@@ -147,13 +148,19 @@ const Question = (
   navigate: any,
 ): JSX.Element => {
   // const navigate = useNavigate();
+  
 
   const item = "flex flex-row items-center py-2 text-black";
   const labletage =
     " text-sm font-medium text-black dark:text-gray-300 flex flex-row";
   const handleClickRadioButton = (e: any): any => {
     var copy = answer;
+    console.log(`e.target.name : ${e.target.name}`);
+    console.log(`e.target.value: ${e.target.value}`);
     switch (e.target.name) {
+      case "0":
+        copy[0] = e.target.value;
+        break;
       case "1":
         copy[1] = e.target.value;
         break;
@@ -186,13 +193,14 @@ const Question = (
         break;
     }
     setanswer(copy);
+    console.log(answer);
   };
 
   const radioClick = () => {
     var result = 0;
-    PastDetail.data.map((it: any): void => {
-      // console.log(it.pastAnswer);
-      if (answer[it.pastQuestionId] == it.pastAnswer) {
+    console.log(answer);    
+    PastDetail.data.map((it: any,index:number): void => {
+      if (answer[index] == it.pastAnswer) {
         result += 10;
       }
     });
@@ -234,34 +242,35 @@ const Question = (
 
   return (
     <div className="flex flex-col justify-center max-w-screen-xl px-5 lg:px-0">
-      {PastDetail.data.map((it: any) => {
+      {/* {console.log(PastDetail.data.length)} */}
+      {PastDetail.data.map((it: any,index: number) => {
         return (
           <div className="flex flex-col justify-center w-full">
             <br />
             <br />
             <div className="flex flex-col w-full text-[1.1rem]">
-              <div className="absolute w-[30%] lg:w-[10%] pt-2 min-h-[3rem] text-center font-extrabold text-white bg-[#F7CCB7] rounded-t-xl">
-                문제 {it.pastQuestionId}번
+              <div className="absolute w-[30%] lg:w-[10%] pt-2 min-h-[3rem] text-center font-extrabold text-white bg-[#F7CCB7] rounded-t-xl">                
+                문제 {index+1}번
               </div>
               <div className="text-justify mt-9 z-10 rounded-xl p-4 bg-[#F4EFEC]">
                 {it.pastQuestion}
               </div>
             </div>
             {/* <보기> 없음 */}
-            {it.pastText === "" ? (
+            {it.pastText === ""||it.pastText === null ? (
               <div>
                 <br />
                 <div className="flex flex-col">
                   <div className={item}>
                     <label
-                      htmlFor={`${it.pastQuestionId}-1`}
+                      htmlFor={`${index}-1`}
                       className={labletage}
                     >
                       <input
-                        id={`${it.pastQuestionId}-1`}
+                        id={`${index}-1`}
                         type="radio"
                         value="1"
-                        name={`${it.pastQuestionId}`}
+                        name={`${index}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                         onClick={handleClickRadioButton}
                         // onChange={.handleChange}
@@ -274,14 +283,14 @@ const Question = (
                   </div>
                   <div className={item}>
                     <label
-                      htmlFor={`${it.pastQuestionId}-2`}
+                      htmlFor={`${index}-2`}
                       className={labletage}
                     >
                       <input
-                        id={`${it.pastQuestionId}-2`}
+                        id={`${index}-2`}
                         type="radio"
                         value="2"
-                        name={`${it.pastQuestionId}`}
+                        name={`${index}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                         onClick={handleClickRadioButton}
                         // onChange={}
@@ -294,14 +303,14 @@ const Question = (
                   </div>
                   <div className={item}>
                     <label
-                      htmlFor={`${it.pastQuestionId}-3`}
+                      htmlFor={`${index}-3`}
                       className={labletage}
                     >
                       <input
-                        id={`${it.pastQuestionId}-3`}
+                        id={`${index}-3`}
                         type="radio"
                         value="3"
-                        name={`${it.pastQuestionId}`}
+                        name={`${index}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                         onClick={handleClickRadioButton}
                       />
@@ -313,14 +322,14 @@ const Question = (
                   </div>
                   <div className={item}>
                     <label
-                      htmlFor={`${it.pastQuestionId}-4`}
+                      htmlFor={`${index}-4`}
                       className={labletage}
                     >
                       <input
-                        id={`${it.pastQuestionId}-4`}
+                        id={`${index}-4`}
                         type="radio"
                         value="4"
-                        name={`${it.pastQuestionId}`}
+                        name={`${index}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                         onClick={handleClickRadioButton}
                       />
@@ -332,14 +341,14 @@ const Question = (
                   </div>
                   <div className={item}>
                     <label
-                      htmlFor={`${it.pastQuestionId}-5`}
+                      htmlFor={`${index}-5`}
                       className={labletage}
                     >
                       <input
-                        id={`${it.pastQuestionId}-5`}
+                        id={`${index}-5`}
                         type="radio"
                         value="5"
-                        name={`${it.pastQuestionId}`}
+                        name={`${index}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                         onClick={handleClickRadioButton}
                       />
@@ -362,14 +371,14 @@ const Question = (
                 <div className="flex flex-col">
                   <div className={item}>
                     <label
-                      htmlFor={`${it.pastQuestionId}-1`}
+                      htmlFor={`${index}-1`}
                       className={labletage}
                     >
                       <input
-                        id={`${it.pastQuestionId}-1`}
+                        id={`${index}-1`}
                         type="radio"
                         value="1"
-                        name={`${it.pastQuestionId}`}
+                        name={`${index}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                         onClick={handleClickRadioButton}
                       />
@@ -382,14 +391,14 @@ const Question = (
                   </div>
                   <div className={item}>
                     <label
-                      htmlFor={`${it.pastQuestionId}-2`}
+                      htmlFor={`${index}-2`}
                       className={labletage}
                     >
                       <input
-                        id={`${it.pastQuestionId}-2`}
+                        id={`${index}-2`}
                         type="radio"
                         value="2"
-                        name={`${it.pastQuestionId}`}
+                        name={`${index}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                         onClick={handleClickRadioButton}
                       />
@@ -402,14 +411,14 @@ const Question = (
                   </div>
                   <div className={item}>
                     <label
-                      htmlFor={`${it.pastQuestionId}-3`}
+                      htmlFor={`${index}-3`}
                       className={labletage}
                     >
                       <input
-                        id={`${it.pastQuestionId}-3`}
+                        id={`${index}-3`}
                         type="radio"
                         value="3"
-                        name={`${it.pastQuestionId}`}
+                        name={`${index}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                         onClick={handleClickRadioButton}
                       />
@@ -422,14 +431,14 @@ const Question = (
                   </div>
                   <div className={item}>
                     <label
-                      htmlFor={`${it.pastQuestionId}-4`}
+                      htmlFor={`${index}-4`}
                       className={labletage}
                     >
                       <input
-                        id={`${it.pastQuestionId}-4`}
+                        id={`${index}-4`}
                         type="radio"
                         value="4"
-                        name={`${it.pastQuestionId}`}
+                        name={`${index}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                         onClick={handleClickRadioButton}
                       />
@@ -442,14 +451,14 @@ const Question = (
                   </div>
                   <div className={item}>
                     <label
-                      htmlFor={`${it.pastQuestionId}-5`}
+                      htmlFor={`${index}-5`}
                       className={labletage}
                     >
                       <input
-                        id={`${it.pastQuestionId}-5`}
+                        id={`${index}-5`}
                         type="radio"
                         value="5"
-                        name={`${it.pastQuestionId}`}
+                        name={`${index}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
                         onClick={handleClickRadioButton}
                       />

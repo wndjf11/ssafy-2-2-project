@@ -5,7 +5,9 @@ import {
   usePostSmssendMutation,
   usePostUserfindpasswordMutation,
 } from "../../Store/NonAuthApi";
+import ErrorPage from "../Common/ErrorPage";
 import Footer from "../Common/Footer";
+import Loading from "../Common/Loading";
 import IntroNavbar from "../Intro/IntroNavbar";
 
 type find = {
@@ -129,9 +131,17 @@ const ResetPassword = () => {
   };
 
   if (isLoading) {
-    return <>로딩중</>;
+    return(
+      <>
+        <Loading />
+      </>
+    )
   } else if (error) {
-    return <>error</>;
+    return(
+      <>
+        <ErrorPage />
+      </>
+    )
   } else {
     return (
       <div className="flex flex-col justify-between h-[100vh] ">
