@@ -9,8 +9,6 @@ function WrongDetail({index, data , setOpen , open ,setIdx }:any ):JSX.Element {
     
     const ref = useRef<HTMLDivElement>(null)
 
-    const [audio, setAudio] = useState(new Audio()); // audio 엘리먼트
-
     // RTK QUERY
     const [getTTS, { error , isLoading }] = useLazyGetTtsQuery();
 
@@ -26,14 +24,13 @@ function WrongDetail({index, data , setOpen , open ,setIdx }:any ):JSX.Element {
     // 재생
     const handlePlay = () => {
       speechSynthesis.cancel();
-      audio.play()
+      handleSpeakClick();
     }
 
 
     // 닫기
     const handleClose = () => {
       speechSynthesis.cancel();
-      audio.pause();
       setOpen(false)
     }
     
@@ -55,17 +52,13 @@ function WrongDetail({index, data , setOpen , open ,setIdx }:any ):JSX.Element {
 
     // 카드 넘길때 마다 자동 재생
     useEffect(() => {
-      audio.pause();
       speechSynthesis.cancel();
       handleSpeakClick();
-      getTTS(data[index]?.wordName).then((r) => {
-        setAudio(new Audio(r?.data?.date));
-      })
     },[index])
 
 
     if(isLoading){
-      // console.log("잠시만 기다려주세요.")
+      //console.log("잠시만 기다려주세요.")
     }
 
     if(error){
