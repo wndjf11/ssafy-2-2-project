@@ -172,8 +172,14 @@ public class BadgeService {
         PastTestResult mypast = pastTestResultRepository.findFirstByUserAndPastTest(user, pastTest);
         if (null != mypast){
             if (mypast.getScore() >= 80){
-                if (!myBadgeList.contains(20L)) {
-                    response.add(badgeadd(20L, user)); // 뱃지 추가
+                if (pastTest.getPastTestId() == 1) {
+                    if (!myBadgeList.contains(20L)) {
+                        response.add(badgeadd(20L, user)); // 뱃지 추가
+                    }
+                } else if (pastTest.getPastTestId() == 2) {
+                    if (!myBadgeList.contains(26L)) {
+                        response.add(badgeadd(26L, user)); // 뱃지 추가
+                    }
                 }
             }
         }
